@@ -1,31 +1,60 @@
-﻿@{
-    ViewBag.Title = "Home Page";
-}
+﻿<link href="~/Content/layer-v3.1.1/layer/theme/default/layer.css" rel="stylesheet" />
+<link href="~/Content/layui-v2.5.6/layui/css/layui.css" rel="stylesheet" />
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+<div class="jumbotron" style="margin-top: 200px;">
+	<div class="row" style="margin-top: 20px;">
+		<div class="form-group znStyle">
+			<label class="col-sm-2 control-label"><em class="zent-form__required">*</em>视频上传：</label>
+			<div class="col-sm-6">
+				<div id="upload_all_file">
+					<div class="layui-upload">
+						<button type="button" class="layui-btn" id="VideoBtn"><i class="layui-icon">&#xe67c;</i>上传视频</button>
+						<input type="hidden" name="Video" id="Video" />
+						<div class="layui-upload-list" id="videoPlay">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+<script src="~/Content/layer-v3.1.1/layer/layer.js"></script>
+<script src="~/Content/layui-v2.5.6/layui/layui.js"></script>
+
+
+<!--layer.js视频上传-->
+<script type="text/javascript">
+    var upload;
+    //上传图片
+    layui.use('upload', function () {
+        upload = layui.upload;
+
+        upload.render({
+            before: function () {
+                layer.msg('视频努力上传中,请耐心等待...', { icon: 16, shade: 0.8, time: false });
+            },
+            elem: '#VideoBtn'
+            , url: '@Url.Action("FileLoad","FileUpload")'
+            , accept: 'video' //视频
+            , exts: 'mp4'//只允许上传的后缀(mp4文件)
+            , done: function (res) {
+                console.log(res);
+                layer.closeAll();
+                layer.msg(res.msg);
+                if (res.code == 1) {
+                    $("#Video").val(res.path);
+                    $("#videoPlay").html('<video controls="controls" id="currentVideo" style="width:400px;"><source src="' + res.path + '" type="video/mp4" /></video>');
+                    $("#videoPlay").show();
+                    // 自动播放
+                    $("#currentVideo")[0].play();
+                }
+            }
+        });
+
+
+        $(".layui-upload-list").on("click", "i", function () {
+            $(this).parent().remove();
+        });
+    });
+</script>
