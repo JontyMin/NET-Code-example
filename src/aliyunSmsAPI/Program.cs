@@ -1,51 +1,63 @@
 ﻿using System;
+using AlibabaCloud.SDK.Dysmsapi20170525;
 using Aliyun.Acs.Core;
 using Aliyun.Acs.Core.Exceptions;
 using Aliyun.Acs.Core.Http;
 using Aliyun.Acs.Core.Profile;
+using AlibabaCloud.OpenApiClient.Models;
+using AlibabaCloud.SDK.Dysmsapi20170525.Models;
+using AlibabaCloud.TeaUtil.Models;
+using System.Collections.Generic;
+using Tea;
 
 namespace aliyunSmsAPI
 {
     class Program
     {
+
+        public static Client CreateClient(string accessKeyId, string accessKeySecret)
+        {
+            Config config = new Config
+            {
+                // 必填，您的 AccessKey ID
+                AccessKeyId = accessKeyId,
+                // 必填，您的 AccessKey Secret
+                AccessKeySecret = accessKeySecret,
+            };
+            // 访问的域名
+            config.Endpoint = "dysmsapi.aliyuncs.com";
+            return new Client(config);
+        }
+
         static void Main(string[] args)
         {
-            IClientProfile profile = DefaultProfile.GetProfile("cn-hangzhou", "<accessKeyId>", "<secret>");
-            DefaultAcsClient client = new DefaultAcsClient(profile);
-            CommonRequest request = new CommonRequest();
-            request.Method = MethodType.POST;
-            request.Domain = "dysmsapi.aliyuncs.com";
-            request.Version = "2017-05-25";
-            request.Action = "SendSms";
-            // request.Protocol = ProtocolType.HTTP
-
-
-            // 随机生成6位验证码
-            var rd = new Random();
-            var code = new
+            Client client = CreateClient("LTAI5tPD45dvn3Qg5uSHzTnE", "tDZfUrFt6yWdb6gxEQH4Y59fLwWKLa");
+            SendSmsRequest sendSmsRequest = new SendSmsRequest
             {
-                code=rd.Next(100000,999999)
+                PhoneNumbers = "18173608896",
+                SignName = "jonty博客",
+                TemplateCode = "SMS_197465032",
+                TemplateParam = "{\"code\":\"3333\"}",
             };
-
-
-            request.AddQueryParameters("PhoneNumbers", "18173608896");
-            request.AddQueryParameters("SignName", "jonty博客");
-            request.AddQueryParameters("TemplateCode", "SMS_197465032");
-
-            // 验证码参数，code 转json格式
-            request.AddBodyParameters("TemplateParam",code.ToJson());
+            RuntimeOptions runtime = new RuntimeOptions();
             try
             {
-                CommonResponse response = client.GetCommonResponse(request);
-                Console.WriteLine(System.Text.Encoding.Default.GetString(response.HttpResponse.Content));
+                // 复制代码运行请自行打印 API 的返回值
+                client.SendSmsWithOptions(sendSmsRequest, runtime);
             }
-            catch (ServerException e)
+            catch (TeaException error)
             {
-                Console.WriteLine(e);
+                // 如有需要，请打印 error
+                AlibabaCloud.TeaUtil.Common.AssertAsString(error.Message);
             }
-            catch (ClientException e)
+            catch (Exception _error)
             {
-                Console.WriteLine(e);
+                TeaException error = new TeaException(new Dictionary<string, object>
+                {
+                    { "message", _error.Message }
+                });
+                // 如有需要，请打印 error
+                AlibabaCloud.TeaUtil.Common.AssertAsString(error.Message);
             }
         }
     }
