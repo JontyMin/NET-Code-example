@@ -13,7 +13,7 @@ namespace aliyunSmsAPI.AcsCore
         public void SendSms()
         {
 
-            IClientProfile profile = DefaultProfile.GetProfile("cn-hangzhou", "LTAI5tPD45dvn3Qg5uSHzTnE", "tDZfUrFt6yWdb6gxEQH4Y59fLwWKLa");
+            IClientProfile profile = DefaultProfile.GetProfile("cn-hangzhou", "", "");
             DefaultAcsClient client = new DefaultAcsClient(profile);
             CommonRequest request = new CommonRequest();
             request.Method = MethodType.POST;

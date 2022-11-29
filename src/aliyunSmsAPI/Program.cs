@@ -31,7 +31,7 @@ namespace aliyunSmsAPI
 
         static void Main(string[] args)
         {
-            Client client = CreateClient("LTAI5tPD45dvn3Qg5uSHzTnE", "tDZfUrFt6yWdb6gxEQH4Y59fLwWKLa");
+            Client client = CreateClient("", "");
             SendSmsRequest sendSmsRequest = new SendSmsRequest
             {
                 PhoneNumbers = "18173608896",
